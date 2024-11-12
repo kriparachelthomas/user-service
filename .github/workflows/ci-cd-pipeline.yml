@@ -1,13 +1,12 @@
 name: CI/CD Pipeline for user-service
 
-# Trigger the pipeline on push or pull request to the 'main' branch
 on:
   push:
     branches:
-      - master  # Trigger the pipeline on push to the 'main' branch
+      - master  # Trigger the pipeline on push to the 'master' branch
   pull_request:
     branches:
-      - master  # Trigger on pull requests targeting the 'main' branch
+      - master  # Trigger on pull requests targeting the 'master' branch
 
 jobs:
   # Job for building, testing, and preparing the app
@@ -25,7 +24,7 @@ jobs:
         with:
           python-version: '3.9'  # Use Python 3.9 (or any version you require)
 
-      # Install dependencies
+      # Install dependencies from requirements.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -57,6 +56,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no user@your-server.com << 'EOF'
             cd /path/to/your/service  # Navigate to your app directory
-            git pull origin main      # Pull the latest changes from the main branch
+            git pull origin master     # Pull the latest changes from the master branch
             systemctl restart user-service  # Restart the service or apply other deployment steps
           EOF
