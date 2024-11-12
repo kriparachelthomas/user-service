@@ -5,4 +5,3 @@ itsdangerous==2.2.0
 blinker==1.8.2
 click==8.1.7
 colorama==0.4.6
-pytest==7.4.0  # Replace with your version
