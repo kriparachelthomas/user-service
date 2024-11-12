@@ -1,65 +1,62 @@
-# This is a CI/CD pipeline for the Python-based user-service project
+name: CI/CD Pipeline for user-service
 
-name: CI/CD Pipeline for user-service (Python)
-
-# Trigger the pipeline on push and pull_request events
+# Trigger the pipeline on push or pull request to the 'main' branch
 on:
   push:
     branches:
-      - main  # Trigger the pipeline on push to the 'main' branch
+      - master  # Trigger the pipeline on push to the 'main' branch
   pull_request:
     branches:
-      - main  # Trigger on pull requests targeting the 'main' branch
+      - master  # Trigger on pull requests targeting the 'main' branch
 
 jobs:
-  # Build and Test Job: Install dependencies, run tests
+  # Job for building, testing, and preparing the app
   build:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu image for the CI runner
+    runs-on: ubuntu-latest  # Use Ubuntu for the CI runner
 
     steps:
       # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Python (specify the version you are using)
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Specify your Python version
+          python-version: '3.9'  # Use Python 3.9 (or any version you require)
 
       # Install dependencies
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip  # Upgrade pip to ensure we are using the latest version
-          pip install -r requirements.txt  # Install dependencies listed in requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from the requirements file
 
-      # Run tests (using pytest)
+      # Run tests using unittest or another framework (unittest example here)
       - name: Run tests
         run: |
-          pytest  # Run your tests using pytest or any other test framework you are using
+          python -m unittest discover tests  # Adjust the 'tests' directory if your tests are in another folder
 
-  # Deploy Job: Deploy to production (or staging) environment
+  # Job for deploying the app (after passing the build)
   deploy:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu image for the CI runner
-    needs: build  # Ensure deployment runs only after the build job finishes
+    runs-on: ubuntu-latest  # Use Ubuntu for the CI runner
+    needs: build  # Make sure this runs only after the 'build' job is successful
 
     steps:
-      # Checkout code again (required for the deploy job)
+      # Checkout code again (needed for the deploy job)
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up SSH keys (use GitHub Secrets for security)
-      - name: Set up SSH keys
+      # Set up SSH keys for deployment (you must add these to GitHub secrets)
+      - name: Set up SSH keys for deployment
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub Secrets
 
-      # Deploy to production (using SSH or cloud CLI tools)
+      # Deploy to the production server or cloud service
       - name: Deploy to production
         run: |
           ssh -o StrictHostKeyChecking=no user@your-server.com << 'EOF'
-            cd /path/to/your/service
-            git pull origin main
-            # Restart your application or perform other deployment tasks
-            systemctl restart user-service  # Or any deployment-specific command
+            cd /path/to/your/service  # Navigate to your app directory
+            git pull origin main      # Pull the latest changes from the main branch
+            systemctl restart user-service  # Restart the service or apply other deployment steps
           EOF
