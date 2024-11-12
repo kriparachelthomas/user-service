@@ -1,111 +1,43 @@
-name: CI/CD Pipeline for user-service
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - master  # Trigger the pipeline on push to the 'master' branch
-  pull_request:
-    branches:
-      - master  # Trigger on pull requests targeting the 'master' branch
+      - main   # Trigger the workflow on push to the 'main' branch
 
 jobs:
-  # Job for building, testing, and preparing the app
-  build:
-    runs-on: ubuntu-latest  # Use Ubuntu for the CI runner
-
-    steps:
-      # Checkout the repository code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'  # Replace with your Python version
-
-      # Install dependencies from requirements.txt
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Install dependencies from the requirements file
-
-      # Run tests using pytest (optional, if you have tests)
-      - name: Run tests
-        run: |
-          pytest  # This will run pytest to execute the tests in your repository
-
-  # Job for deploying the app (after passing the build)
   deploy:
-    runs-on: ubuntu-latest  # Use Ubuntu for the CI runner
-    needs: build  # Ensure the deploy job runs after the build job is successful
+    runs-on: ubuntu-latest  # Use an Ubuntu-based runner
 
     steps:
-      # Checkout code again (needed for the deploy job)
+      # Step 1: Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      # Set up SSH keys for deployment
-      - name: Set up SSH keys for deployment
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ -----BEGIN OPENSSH PRIVATE KEY-----
-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
------END OPENSSH PRIVATE KEY-----
+      # Step 2: Set up SSH keys for authentication
+      - name: Set up SSH key
+        run: |
+          # Write the SSH private key from the secret into a file
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          # Set correct permissions for the SSH private key
+          chmod 600 ~/.ssh/id_rsa
+          # Add the host key of the server to known hosts to prevent SSH asking to verify it
+          ssh-keyscan -H your-server.com >> ~/.ssh/known_hosts
 
- }}  # Use the secret you added earlier
-
-      # Deploy to production
+      # Step 3: Deploy to the server
       - name: Deploy to production
         run: |
           ssh -o StrictHostKeyChecking=no user@your-server.com << 'EOF'
-            cd /path/to/your/service  # Navigate to your app directory
-            git pull origin master     # Pull the latest changes from the master branch
-            systemctl restart user-service  # Restart the service or apply other deployment steps
+            # Navigate to your app directory
+            cd /path/to/your/service
+            
+            # Pull the latest changes from the 'main' branch
+            git pull origin main
+
+            # Restart the service (adjust to your specific service name and setup)
+            systemctl restart your-service-name
+            
+            # You can add other deployment steps here (e.g., npm install, etc.)
           EOF
+
+    # Optional: Post-deployment steps like notifying on success/failure can go here
