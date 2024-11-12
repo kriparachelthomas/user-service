@@ -6,10 +6,10 @@ name: CI/CD Pipeline for user-service (Python)
 on:
   push:
     branches:
-      - main  # Trigger the pipeline on push to the 'main' branch
+      - master  # Trigger the pipeline on push to the 'main' branch
   pull_request:
     branches:
-      - main  # Trigger on pull requests targeting the 'main' branch
+      - master  # Trigger on pull requests targeting the 'main' branch
 
 jobs:
   # Build and Test Job: Install dependencies, run tests
