@@ -49,7 +49,8 @@ jobs:
       - name: Set up SSH keys for deployment
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
+          ssh-private-key: ${{ -----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
 NhAAAAAwEAAQAAAgEAtnimN/wqbPmMjZK/hqo8UFkTX9lnryYPj+/zXZRWr8se9LIX36CX
 YzWyuuH7nTM4KOF9oquQY7AUE0XUKY96XTOXlDvBFGgFFLQBdLFSQboqxzTEQeUDYOhEan
 yLoZTdK/F9LCtHOhYAXs0fNpi63GDMRXnfMrwUilg/jYkHfp3c+Pm6SlvDG6j20ou8lOLf
@@ -96,6 +97,8 @@ iGYO8SVux9IZTUDRs0XhatBck6o2Stsd993PJV70Z4sI9D87zPDS5saqsO2uykkbhORBbL
 fZjwYCXt8t/VkiGnIRFhf5hjQ0EiQUoW99E0E0EFvpqBOO4M2sLQiRX40GeQCVLoKl4+mR
 1SM7q5JexWaAYP2xSfVaM6ZZtOZ+2TEPS85cmID8QObwukHwpqcSw4wELdxA52yyJH0kbh
 4sF3Oc+cFa8dAAAAH2tyaXBhcmFjaGVsdGhvbWFzMDk5OEBnbWFpbC5jb20BAgM=
+-----END OPENSSH PRIVATE KEY-----
+
  }}  # Use the secret you added earlier
 
       # Deploy to production
