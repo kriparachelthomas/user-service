@@ -1,0 +1,64 @@
+# This is a basic CI/CD pipeline for the user-service project
+
+name: CI/CD Pipeline for user-service
+
+# Trigger the pipeline on push and pull_request events
+on:
+  push:
+    branches:
+      - master  # Trigger the pipeline on push to the 'main' branch
+  pull_request:
+    branches:
+      - master  # Trigger on pull requests targeting the 'main' branch
+
+jobs:
+  # Build and Test Job: Install dependencies, run tests
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image for the CI runner
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js (or Python/Java depending on your app stack)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify the Node.js version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install  # Use pip install for Python or other relevant commands for your stack
+
+      # Run tests (replace with pytest or your test command)
+      - name: Run tests
+        run: |
+          npm test  # Replace with `pytest` for Python or `mvn test` for Java
+
+  # Deploy Job: Deploy to production (or staging) environment
+  deploy:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image for the CI runner
+    needs: build  # Ensure deployment runs only after the build job finishes
+
+    steps:
+      # Checkout code again (required for the deploy job)
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up SSH keys (use GitHub Secrets for security)
+      - name: Set up SSH keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub Secrets
+
+      # Deploy to production (using SSH or cloud CLI tools)
+      - name: Deploy to production
+        run: |
+          ssh -o StrictHostKeyChecking=no user@your-server.com << 'EOF'
+            cd /path/to/your/service
+            git pull origin main
+            # Restart your application or perform other deployment tasks
+            systemctl restart user-service  # Or any deployment-specific command
+          EOF
