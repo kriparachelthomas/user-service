@@ -17,30 +17,33 @@ jobs:
       # Step 2: Set up SSH keys for authentication
       - name: Set up SSH key
         run: |
-          # Create the .ssh directory if it doesn't exist
-          mkdir -p ~/.ssh
+          echo "Creating .ssh directory"
+          mkdir -p ~/.ssh  # Ensure the .ssh directory exists
           
-          # Write the SSH private key from the secret into a file
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "Saving SSH private key to id_rsa"
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Write the SSH private key to file
           
-          # Set correct permissions for the SSH private key
-          chmod 600 ~/.ssh/id_rsa
+          # Debugging: Check contents of .ssh directory and private key permissions
+          ls -la ~/.ssh
+          cat ~/.ssh/id_rsa  # Ensure the private key is written correctly (be cautious about security)
           
-          # Add the host key of the server to known hosts to prevent SSH asking to verify it
-          ssh-keyscan -H your-server.com >> ~/.ssh/known_hosts
+          echo "Setting correct permissions for the SSH private key"
+          chmod 600 ~/.ssh/id_rsa  # Set correct permissions for the private key
+          
+          echo "Adding the host key to known hosts"
+          ssh-keyscan -H your-server.com >> ~/.ssh/known_hosts  # Add the server's SSH key to known hosts
 
-      # Step 3: Deploy to production
-      - name: Deploy to production
+      # Step 3: Deploy to production (master node)
+      - name: Deploy to production (Master Node)
         run: |
+          echo "Starting SSH connection to the master node"
           ssh -o StrictHostKeyChecking=no user@your-server.com << 'EOF'
-            # Navigate to your app directory
-            cd /path/to/your/service
-            
-            # Pull the latest changes from the 'main' branch
-            git pull origin master
+            # Navigate to the app directory on the master node
+            cd /path/to/your/service  # Update the path to your service
 
-            # Restart the service (adjust to your specific service name and setup)
-            systemctl restart your-service-name
-            
-            # You can add other deployment steps here (e.g., npm install, etc.)
+            # Pull the latest changes from the main branch
+            git pull origin master  # Make sure to use 'main' branch, or 'master' if required
+
+            # Restart the service to apply changes
+            systemctl restart your-service-name  # Update with your actual service name
           EOF
